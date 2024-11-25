@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Image, StyleSheet, TextInput, View } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
@@ -7,8 +7,12 @@ interface SearchTabProps {
 }
 
 export const SearchTab: React.FC<SearchTabProps> = ({ onSearch }) => {
-  const handleTextChange = (text: string) => {
-    onSearch(text);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearch = () => {
+    if (searchTerm.trim()) {
+      onSearch(searchTerm);
+    }
   };
 
   return (
@@ -18,7 +22,9 @@ export const SearchTab: React.FC<SearchTabProps> = ({ onSearch }) => {
         <TextInput
           style={styles.input}
           placeholder="Search"
-          onChangeText={handleTextChange}
+          value={searchTerm}
+          onChangeText={setSearchTerm}
+          onSubmitEditing={handleSearch}
         />
       </View>
       <View style={styles.box}>

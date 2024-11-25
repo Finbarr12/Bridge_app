@@ -8,6 +8,7 @@ import { get_categories, get_products } from "../api/my_products";
 import { Product_Card } from "../common/Product_card";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState, useEffect } from "react";
+import { NotFound } from "../components/NotFound";
 
 const categoryMapping: Record<string, string> = {
   electronics: "Fresh Food & Vegetables",
@@ -22,6 +23,7 @@ export default function HomeScreen() {
     categories: [],
   });
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   // Fetch categories and products
   const fetch_Categories = useQuery({
@@ -60,73 +62,127 @@ export default function HomeScreen() {
     await AsyncStorage.removeItem("searchHistory");
   };
 
+  // Handle search term change
+  const handleSearch = (term: string) => {
+    setSearchTerm(term);
+
+    // Search logic for products and categories
+    const productResults = my_product_data?.filter(
+      (product: any) =>
+        product.title.toLowerCase().includes(term.toLowerCase()) ||
+        product.description.toLowerCase().includes(term.toLowerCase())
+    );
+
+    const categoryResults = my_data?.filter((category: any) =>
+      category.toLowerCase().includes(term.toLowerCase())
+    );
+
+    setSearchResults({
+      products: productResults || [],
+      categories: categoryResults || [],
+    });
+
+    saveSearchHistory(term);
+  };
+
   return (
-    <ScrollView>
+    <ScrollView style={{ flex: 1 }}>
       <View style={styles.container}>
-        <SearchTab
-          onSearch={(term: string) => {
-            // Search logic
-            const productResults = my_product_data?.filter(
-              (product: any) =>
-                product.title.toLowerCase().includes(term.toLowerCase()) ||
-                product.description.toLowerCase().includes(term.toLowerCase())
-            );
-
-            const categoryResults = my_data?.filter((category: any) =>
-              category.toLowerCase().includes(term.toLowerCase())
-            );
-
-            setSearchResults({
-              products: productResults || [],
-              categories: categoryResults || [],
-            });
-
-            saveSearchHistory(term);
-          }}
-        />
+        <SearchTab onSearch={handleSearch} />
         <SearchHistory history={searchHistory} onClear={clearSearchHistory} />
+
         {/* Categories Section */}
         <View style={styles.textHold}>
           <Text style={styles.catetext}>Categories</Text>
         </View>
         <View style={styles.category_card}>
-          {my_data?.map((category: any, index: any) => {
-            const uiCategory =
-              categoryMapping[category.toLowerCase()] || "Miscellaneous";
-            return (
-              <Card
-                key={category.id || index}
-                image={require("../assets/fruits.png")}
-                text={uiCategory.charAt(0).toUpperCase() + uiCategory.slice(1)}
-                bgcolor="rgb(224, 255, 235)"
-                bdcolor="#60b77f"
-              />
-            );
-          })}
+          {searchTerm === "" ? (
+            my_data?.map((category: any, index: any) => {
+              const uiCategory =
+                categoryMapping[category.toLowerCase()] || "Miscellaneous";
+              return (
+                <Card
+                  key={category.id || index}
+                  image={require("../assets/fruits.png")}
+                  text={
+                    uiCategory.charAt(0).toUpperCase() + uiCategory.slice(1)
+                  }
+                  bgcolor="rgb(224, 255, 235)"
+                  bdcolor="#60b77f"
+                />
+              );
+            })
+          ) : searchResults.categories.length === 0 ? (
+            <>
+              <NotFound />
+            </>
+          ) : (
+            searchResults.categories.map((category: any, index: any) => {
+              const uiCategory =
+                categoryMapping[category.toLowerCase()] || "Miscellaneous";
+              return (
+                <Card
+                  key={category.id || index}
+                  image={require("../assets/fruits.png")}
+                  text={
+                    uiCategory.charAt(0).toUpperCase() + uiCategory.slice(1)
+                  }
+                  bgcolor="rgb(224, 255, 235)"
+                  bdcolor="#60b77f"
+                />
+              );
+            })
+          )}
         </View>
 
+        {/* Products Section */}
         <View style={styles.textHold}>
           <Text style={styles.catetext}>Products</Text>
         </View>
         <View style={styles.category_card}>
-          {searchResults.products.map((product: any, index: any) => (
-            <Product_Card
-              key={product.id || index}
-              image={product.image}
-              text={
-                product.title?.length > 20
-                  ? `${product.title.slice(0, 20)}...`
-                  : product.title || "Product Name"
-              }
-              desc={
-                product.description?.length > 30
-                  ? `${product.description.slice(0, 30)}...`
-                  : product.description || "Product Name"
-              }
-              price={product.price}
-              bdcolor=""
-            />
-          ))}
+          {searchTerm === "" ? (
+            my_product_data?.map((product: any, index: any) => (
+              <Product_Card
+                key={product.id || index}
+                image={product.image}
+                text={
+                  product.title?.length > 20
+                    ? `${product.title.slice(0, 20)}...`
+                    : product.title || "Product Name"
+                }
+                desc={
+                  product.description?.length > 30
+                    ? `${product.description.slice(0, 30)}...`
+                    : product.description || "Product Name"
+                }
+                price={product.price}
+                bdcolor=""
+              />
+            ))
+          ) : searchResults.products.length === 0 ? (
+            <>
+              <NotFound />
+            </>
+          ) : (
+            searchResults.products.map((product: any, index: any) => (
+              <Product_Card
+                key={product.id || index}
+                image={product.image}
+                text={
+                  product.title?.length > 20
+                    ? `${product.title.slice(0, 20)}...`
+                    : product.title || "Product Name"
+                }
+                desc={
+                  product.description?.length > 30
+                    ? `${product.description.slice(0, 30)}...`
+                    : product.description || "Product Name"
+                }
+                price={product.price}
+                bdcolor=""
+              />
+            ))
+          )}
         </View>
       </View>
     </ScrollView>
