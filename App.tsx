@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import SearchTab from "./components/SearchTab";
 import { SearchHistory } from "./components/SearchHistory";
 import { Card } from "./common/Card";
