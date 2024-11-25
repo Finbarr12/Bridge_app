@@ -3,37 +3,28 @@ import { StyleSheet, Text, View } from "react-native";
 import SearchTab from "../components/SearchTab";
 import { SearchHistory } from "../components/SearchHistory";
 import { Card } from "../common/Card";
+import { useQuery } from "@tanstack/react-query";
+import { get_categories } from "../api/my_products";
 
 export default function HomeScreen() {
+  const query = useQuery({ queryKey: ["category"], queryFn: get_categories });
+  const my_data = query.data?.data;
+  console.log(my_data);
   return (
     <View style={styles.container}>
       <SearchTab />
       <SearchHistory />
       <View style={styles.category_card}>
-        <Card
-          image={`${require("../assets/fruits.png")}`}
-          text="Fruits & Vegetables"
-          bgcolor="rgb(224, 255, 235)"
-          bdcolor="#60b77f"
-        />
-        <Card
-          image={`${require("../assets/cookingOil.png")}`}
-          text="Cooking Oil & Ghee"
-          bdcolor="#fc8a19"
-          bgcolor="#ffcea0"
-        />
-        <Card
-          image={`${require("../assets/MeatFish.png")}`}
-          text="Meat & Fish"
-          bdcolor="#F7A593"
-          bgcolor="#fcc7bd"
-        />
-        <Card
-          image={`${require("../assets/bakery_snacks.png")}`}
-          text="Bakery & Snacks"
-          bdcolor="#D3B0E0"
-          bgcolor="#f1d4fc"
-        />
+        {my_data.map((category: any, index: any) => (
+          <>
+            <Card
+              image={`${require("../assets/fruits.png")}`}
+              text={category}
+              bgcolor="rgb(224, 255, 235)"
+              bdcolor="#60b77f"
+            />
+          </>
+        ))}
       </View>
     </View>
   );
