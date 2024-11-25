@@ -1,11 +1,13 @@
 import { StatusBar } from "expo-status-bar";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import SearchTab from "../components/SearchTab";
+import { SearchTab } from "../components/SearchTab";
 import { SearchHistory } from "../components/SearchHistory";
 import { Card } from "../common/Card";
 import { useQuery } from "@tanstack/react-query";
 import { get_categories, get_products } from "../api/my_products";
 import { Product_Card } from "../common/Product_card";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useState, useEffect } from "react";
 
 const categoryMapping: Record<string, string> = {
   electronics: "Fresh Food & Vegetables",
@@ -15,6 +17,13 @@ const categoryMapping: Record<string, string> = {
 };
 
 export default function HomeScreen() {
+  const [searchResults, setSearchResults] = useState({
+    products: [],
+    categories: [],
+  });
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
+
+  // Fetch categories and products
   const fetch_Categories = useQuery({
     queryKey: ["category"],
     queryFn: get_categories,
@@ -27,13 +36,55 @@ export default function HomeScreen() {
   });
   const my_product_data = get_all_products.data?.data;
 
-  console.log(my_product_data);
+  // Load search history on component mount
+  useEffect(() => {
+    (async () => {
+      const history = await AsyncStorage.getItem("searchHistory");
+      setSearchHistory(history ? JSON.parse(history) : []);
+    })();
+  }, []);
+
+  // Save a search term to history
+  const saveSearchHistory = async (term: string) => {
+    const updatedHistory = [
+      term,
+      ...searchHistory.filter((item) => item !== term),
+    ];
+    setSearchHistory(updatedHistory);
+    await AsyncStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
+  };
+
+  // Clear search history
+  const clearSearchHistory = async () => {
+    setSearchHistory([]);
+    await AsyncStorage.removeItem("searchHistory");
+  };
 
   return (
     <ScrollView>
       <View style={styles.container}>
-        <SearchTab />
-        <SearchHistory />
+        <SearchTab
+          onSearch={(term: string) => {
+            // Search logic
+            const productResults = my_product_data?.filter(
+              (product: any) =>
+                product.title.toLowerCase().includes(term.toLowerCase()) ||
+                product.description.toLowerCase().includes(term.toLowerCase())
+            );
+
+            const categoryResults = my_data?.filter((category: any) =>
+              category.toLowerCase().includes(term.toLowerCase())
+            );
+
+            setSearchResults({
+              products: productResults || [],
+              categories: categoryResults || [],
+            });
+
+            saveSearchHistory(term);
+          }}
+        />
+        <SearchHistory history={searchHistory} onClear={clearSearchHistory} />
         {/* Categories Section */}
         <View style={styles.textHold}>
           <Text style={styles.catetext}>Categories</Text>
@@ -58,7 +109,7 @@ export default function HomeScreen() {
           <Text style={styles.catetext}>Products</Text>
         </View>
         <View style={styles.category_card}>
-          {my_product_data?.map((product: any, index: any) => (
+          {searchResults.products.map((product: any, index: any) => (
             <Product_Card
               key={product.id || index}
               image={product.image}
@@ -73,6 +124,7 @@ export default function HomeScreen() {
                   : product.description || "Product Name"
               }
               price={product.price}
+              bdcolor=""
             />
           ))}
         </View>

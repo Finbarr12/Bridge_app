@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import { Card } from "../interface/interfaces";
+// import FastImage from "react-native-fast-image";
 
 export const Product_Card: React.FC<Card> = ({
   image,

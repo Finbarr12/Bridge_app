@@ -1,35 +1,34 @@
-import { StatusBar } from "expo-status-bar";
-import { Image, StyleSheet, Text, TextInput, View } from "react-native";
+import React from "react";
+import { Image, StyleSheet, TextInput, View } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
-export default function SearchTab() {
-  return (
-    // <View style={styles.container}>
-    <View style={styles.srchold}>
-      <View style={styles.search}>
-        <AntDesign
-          name="search1"
-          size={24}
-          color="black"
-          style={{ color: "#ff7716" }}
-        />
-        <TextInput style={styles.input} placeholder="Search" />
-      </View>
-      <View style={styles.box}>
-        <Image source={require("../assets/menu.png")}></Image>
-      </View>
-    </View>
-    // </View>
-  );
+interface SearchTabProps {
+  onSearch: (term: string) => void;
 }
 
+export const SearchTab: React.FC<SearchTabProps> = ({ onSearch }) => {
+  const handleTextChange = (text: string) => {
+    onSearch(text);
+  };
+
+  return (
+    <View style={styles.srchold}>
+      <View style={styles.search}>
+        <AntDesign name="search1" size={24} style={{ color: "#ff7716" }} />
+        <TextInput
+          style={styles.input}
+          placeholder="Search"
+          onChangeText={handleTextChange}
+        />
+      </View>
+      <View style={styles.box}>
+        <Image source={require("../assets/menu.png")} />
+      </View>
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "red",
-    alignItems: "center",
-    justifyContent: "center",
-  },
   srchold: {
     width: "100%",
     justifyContent: "space-around",
@@ -39,8 +38,6 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     backgroundColor: "transparent",
-    justifyContent: "space-around",
-    flexDirection: "row",
     height: "100%",
     paddingLeft: 10,
     fontSize: 18,
@@ -62,7 +59,6 @@ const styles = StyleSheet.create({
   box: {
     width: 60,
     height: 50,
-    boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
     marginTop: 70,
     alignItems: "center",
     justifyContent: "center",

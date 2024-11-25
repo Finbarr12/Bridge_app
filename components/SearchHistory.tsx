@@ -1,31 +1,29 @@
-import { StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 
-export const SearchHistory = () => {
+interface SearchHistoryProps {
+  history: string[];
+  onClear: () => Promise<void>;
+}
+
+export const SearchHistory: React.FC<SearchHistoryProps> = ({
+  history,
+  onClear,
+}) => {
   return (
     <View>
       <View style={styles.MainTH}>
         <Text style={styles.MainT}>Search History</Text>
-        <Text style={styles.cl}>clear</Text>
+        <TouchableOpacity onPress={onClear}>
+          <Text style={styles.cl}>clear</Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.srcHistoryh}>
-        <View style={styles.srcCon}>
-          <Text>Others</Text>
-        </View>
-        <View style={styles.srcCon}>
-          <Text>Women</Text>
-        </View>
-        <View style={styles.srcCon}>
-          <Text>Men's Clothing</Text>
-        </View>
-        <View style={styles.srcCon}>
-          <Text>Electronics</Text>
-        </View>
-        <View style={styles.srcCon}>
-          <Text>Shirts</Text>
-        </View>
-        <View style={styles.srcCon}>
-          <Text>Fresh Vegetables</Text>
-        </View>
+        {history.map((item, index) => (
+          <View key={index} style={styles.srcCon}>
+            <Text>{item}</Text>
+          </View>
+        ))}
       </View>
     </View>
   );
@@ -41,6 +39,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginTop: 30,
+    width: "100%",
   },
   cl: {
     marginRight: 15,
@@ -48,15 +47,12 @@ const styles = StyleSheet.create({
   },
   srcHistoryh: {
     flexDirection: "row",
-    // gap: 2,
     flexWrap: "wrap",
     marginTop: 10,
   },
   srcCon: {
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
     backgroundColor: "#f5f5f5",
     marginLeft: 15,
     marginTop: 15,
