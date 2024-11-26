@@ -12,7 +12,14 @@ export const Product_Card: React.FC<Card> = ({
 }) => {
   return (
     <View style={[styles.cardContainer, { borderColor: bdcolor }]}>
-      <Image source={{ uri: image }} />
+      <View style={{ width: 50, height: 50, backgroundColor: "red" }}>
+        <Image
+          source={{
+            uri: image,
+          }}
+          style={styles.image}
+        />
+      </View>
       <Text
         style={{
           fontSize: 20,
@@ -67,5 +74,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 20,
+  },
+
+  image: {
+    width: 50,
+    height: 50,
+    objectFit: "fill",
   },
 });
