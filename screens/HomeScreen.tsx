@@ -85,6 +85,27 @@ export default function HomeScreen() {
     saveSearchHistory(term);
   };
 
+  const images: any = {
+    electronics: require("../assets/fruits.png"),
+    jewelery: require("../assets/cookingOil.png"),
+    "men's clothing": require("../assets/MeatFish.png"),
+    "women's clothing": require("../assets/bakery_snacks.png"),
+  };
+
+  const bd: any = {
+    electronics: "#53B175B2",
+    jewelery: "#F8A44CB2",
+    "men's clothing": "#F7A59340",
+    "women's clothing": "#D3B0E0",
+  };
+
+  const bg: any = {
+    electronics: "rgb(224, 255, 235)",
+    jewelery: "#fcd5ae",
+    "men's clothing": "#fcc5ba",
+    "women's clothing": "#f4dbff",
+  };
+
   return (
     <ScrollView style={{ flex: 1 }}>
       <View style={styles.container}>
@@ -100,15 +121,19 @@ export default function HomeScreen() {
             my_data?.map((category: any, index: any) => {
               const uiCategory =
                 categoryMapping[category.toLowerCase()] || "Miscellaneous";
+
+              const categoryImage: any = images[category] || "";
+              const border: any = bd[category] || "";
+              const backgroundColor: any = bg[category] || "";
               return (
                 <Card
                   key={category.id || index}
-                  image={require("../assets/fruits.png")}
+                  image={categoryImage}
                   text={
                     uiCategory.charAt(0).toUpperCase() + uiCategory.slice(1)
                   }
-                  bgcolor="rgb(224, 255, 235)"
-                  bdcolor="#60b77f"
+                  bgcolor={backgroundColor}
+                  bdcolor={border}
                 />
               );
             })
@@ -126,15 +151,19 @@ export default function HomeScreen() {
             searchResults.categories.map((category: any, index: any) => {
               const uiCategory =
                 categoryMapping[category.toLowerCase()] || "Miscellaneous";
+
+              const categoryImage: any = images[category] || "";
+              const border: any = bd[category] || "";
+              const backgroundColor: any = bg[category] || "";
               return (
                 <Card
                   key={category.id || index}
-                  image={require("../assets/fruits.png")}
+                  image={categoryImage}
                   text={
                     uiCategory.charAt(0).toUpperCase() + uiCategory.slice(1)
                   }
-                  bgcolor="rgb(224, 255, 235)"
-                  bdcolor="#60b77f"
+                  bgcolor={backgroundColor}
+                  bdcolor={border}
                 />
               );
             })
@@ -191,7 +220,7 @@ export default function HomeScreen() {
                     : product.description || "Product Name"
                 }
                 price={product.price}
-                bdcolor=""
+                bdcolor="#60b77f"
               />
             ))
           )}

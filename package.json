@@ -17,15 +17,18 @@
     "expo": "~52.0.11",
     "expo-av": "^15.0.1",
     "expo-status-bar": "~2.0.0",
+    "expo-video": "~2.0.1",
     "install": "^0.13.0",
+    "lottie-react-native": "^7.1.0",
     "react": "18.3.1",
-    "react-native": "0.76.3",
+    "react-native": "^0.76.3",
     "react-native-fast-image": "^8.6.3",
-    "expo-video": "~2.0.1"
+    "react-native-reanimated": "^3.16.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@types/react": "~18.3.12",
+    "@types/react-native": "^0.72.8",
     "typescript": "^5.3.3"
   },
   "private": true
