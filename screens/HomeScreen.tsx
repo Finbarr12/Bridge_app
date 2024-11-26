@@ -113,9 +113,15 @@ export default function HomeScreen() {
               );
             })
           ) : searchResults.categories.length === 0 ? (
-            <>
-              <NotFound />
-            </>
+            <View
+              style={{
+                width: "100%",
+                // backgroundColor: "red",
+                alignItems: "center",
+              }}
+            >
+              <NotFound text="No Category Found" />
+            </View>
           ) : (
             searchResults.categories.map((category: any, index: any) => {
               const uiCategory =
@@ -160,9 +166,15 @@ export default function HomeScreen() {
               />
             ))
           ) : searchResults.products.length === 0 ? (
-            <>
-              <NotFound />
-            </>
+            <View
+              style={{
+                width: "100%",
+                // backgroundColor: "red",
+                alignItems: "center",
+              }}
+            >
+              <NotFound text="No Product Found" />
+            </View>
           ) : (
             searchResults.products.map((product: any, index: any) => (
               <Product_Card

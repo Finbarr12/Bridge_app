@@ -5,3 +5,7 @@ export interface Card {
   price?: string;
   bdcolor?: string;
 }
+
+export interface not_found {
+  text?: string;
+}
